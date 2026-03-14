@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Mail, Lock, ShieldCheck, Loader2 } from 'lucide-react';
+import { User, Mail, Lock, ShieldCheck, Loader2, Calendar } from 'lucide-react';
 import AuthContext from '../context/AuthContext';
 
 const RegisterPage = () => {
@@ -10,7 +10,6 @@ const RegisterPage = () => {
   const [role, setRole] = useState('student');
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
   const { register } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -29,113 +28,98 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex-grow flex items-center justify-center relative w-full overflow-hidden px-4 md:py-12 py-6">
-      
-      {/* Premium Background */}
-      <div className="absolute top-[10%] right-[10%] w-[40%] h-[40%] bg-blue-400/10 rounded-full blur-[120px] pointer-events-none mix-blend-multiply"></div>
-      <div className="absolute bottom-[20%] left-[-5%] w-[35%] h-[35%] bg-purple-400/10 rounded-full blur-[100px] pointer-events-none mix-blend-multiply"></div>
+    <div className="flex-grow flex items-center justify-center relative w-full overflow-hidden px-4 py-12">
+      <div className="absolute inset-0 bg-mesh pointer-events-none"></div>
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[400px] bg-gradient-to-b from-indigo-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
-      <div className="w-full max-w-md bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)] border border-white/50 p-8 md:p-12 relative z-10">
-        
+      <div className="w-full max-w-[420px] relative z-10 animate-fade-in-up">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-extrabold tracking-tight text-black mb-3">Create an account</h2>
-          <p className="text-sm text-slate-500 font-medium tracking-wide">Join Campus Event Hub today.</p>
+          <Link to="/" className="inline-flex items-center gap-2 mb-6">
+            <div className="bg-[var(--color-primary)] text-white p-1.5 rounded-lg">
+              <Calendar className="h-4.5 w-4.5" strokeWidth={2.5}/>
+            </div>
+            <span className="font-bold text-lg">Event<span className="text-[var(--color-primary)]">Hub</span></span>
+          </Link>
+          <h2 className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">Create your account</h2>
+          <p className="text-sm text-[var(--color-text-secondary)] mt-1.5">Start discovering and organizing campus events</p>
         </div>
 
-        {error && (
-          <div className="bg-red-50 text-red-600 p-4 mb-6 rounded-2xl text-sm font-medium text-center border border-red-100 animate-fade-in-up">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1 relative group">
-            <label className="text-[13px] font-semibold text-slate-700 ml-1">Full Name</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <User className="h-5 w-5 text-slate-400 group-focus-within:text-black transition-colors" />
-              </div>
-              <input
-                type="text"
-                required
-                placeholder="John Doe"
-                className="block w-full pl-11 pr-4 py-3.5 rounded-2xl border-slate-200 bg-white/50 border focus:border-black focus:ring-0 text-slate-900 transition-all text-sm outline-none placeholder:text-slate-400 font-medium hover:border-slate-300 focus:bg-white"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
+        <div className="bg-white rounded-2xl border border-[var(--color-border)] shadow-card p-8">
+          {error && (
+            <div className="bg-red-50 text-red-600 p-3.5 mb-6 rounded-xl text-sm font-medium text-center border border-red-100">
+              {error}
             </div>
-          </div>
+          )}
 
-          <div className="space-y-1 relative group">
-            <label className="text-[13px] font-semibold text-slate-700 ml-1">Email Address</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-slate-400 group-focus-within:text-black transition-colors" />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-[var(--color-text-primary)]">Full Name</label>
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-[var(--color-text-tertiary)]" />
+                <input type="text" required placeholder="John Doe"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)] focus:bg-white focus:border-[var(--color-primary)] focus:ring-2 focus:ring-indigo-500/10 text-sm font-medium text-[var(--color-text-primary)] outline-none transition-all placeholder:text-[var(--color-text-tertiary)]"
+                  value={name} onChange={(e) => setName(e.target.value)}
+                />
               </div>
-              <input
-                type="email"
-                required
-                placeholder="you@university.edu"
-                className="block w-full pl-11 pr-4 py-3.5 rounded-2xl border-slate-200 bg-white/50 border focus:border-black focus:ring-0 text-slate-900 transition-all text-sm outline-none placeholder:text-slate-400 font-medium hover:border-slate-300 focus:bg-white"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
             </div>
-          </div>
 
-          <div className="space-y-1 relative group">
-            <label className="text-[13px] font-semibold text-slate-700 ml-1">Strong Password</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-black transition-colors" />
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-[var(--color-text-primary)]">Email</label>
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-[var(--color-text-tertiary)]" />
+                <input type="email" required placeholder="you@university.edu"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)] focus:bg-white focus:border-[var(--color-primary)] focus:ring-2 focus:ring-indigo-500/10 text-sm font-medium text-[var(--color-text-primary)] outline-none transition-all placeholder:text-[var(--color-text-tertiary)]"
+                  value={email} onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
-              <input
-                type="password"
-                required
-                placeholder="••••••••"
-                className="block w-full pl-11 pr-4 py-3.5 rounded-2xl border-slate-200 bg-white/50 border focus:border-black focus:ring-0 text-slate-900 transition-all text-sm outline-none placeholder:text-slate-400 font-medium hover:border-slate-300 focus:bg-white tracking-widest"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
             </div>
-          </div>
 
-          <div className="space-y-1 relative group">
-            <label className="text-[13px] font-semibold text-slate-700 ml-1">Account Role</label>
-            <div className="relative mt-1">
-               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <ShieldCheck className="h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-[var(--color-text-primary)]">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-[var(--color-text-tertiary)]" />
+                <input type="password" required placeholder="Min. 6 characters"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-secondary)] focus:bg-white focus:border-[var(--color-primary)] focus:ring-2 focus:ring-indigo-500/10 text-sm font-medium text-[var(--color-text-primary)] outline-none transition-all placeholder:text-[var(--color-text-tertiary)] tracking-widest"
+                  value={password} onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="block w-full pl-11 pr-10 py-3.5 rounded-2xl border-slate-200 bg-white/50 border focus:border-blue-500 focus:ring-0 text-slate-900 transition-all text-sm outline-none font-semibold hover:border-slate-300 focus:bg-white appearance-none cursor-pointer"
-              >
-                <option value="student" className="font-medium text-slate-900 py-2">👨‍🎓 Student Attendee</option>
-                <option value="organizer" className="font-medium text-slate-900 py-2">📋 Event Organizer</option>
-              </select>
             </div>
+
+            {/* Role Selector — Stripe-style toggle */}
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-[var(--color-text-primary)]">I want to</label>
+              <div className="grid grid-cols-2 gap-2 p-1 bg-[var(--color-surface-tertiary)] rounded-xl border border-[var(--color-border)]">
+                <button type="button" onClick={() => setRole('student')}
+                  className={`py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${role === 'student' ? 'bg-white text-[var(--color-text-primary)] shadow-sm border border-[var(--color-border)]' : 'text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]'}`}>
+                  🎓 Attend Events
+                </button>
+                <button type="button" onClick={() => setRole('organizer')}
+                  className={`py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${role === 'organizer' ? 'bg-white text-[var(--color-text-primary)] shadow-sm border border-[var(--color-border)]' : 'text-[var(--color-text-tertiary)] hover:text-[var(--color-text-secondary)]'}`}>
+                  📋 Organize Events
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" disabled={isSubmitting}
+              className="w-full flex items-center justify-center gap-2 py-3 mt-2 rounded-xl text-sm font-bold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] hover:shadow-lg hover:shadow-indigo-500/25 hover:-translate-y-px focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] transition-all duration-300 disabled:opacity-60"
+            >
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Account'}
+            </button>
+          </form>
+
+          <div className="flex items-center gap-3 mt-6 mb-4">
+            <div className="flex-1 h-px bg-[var(--color-border)]"></div>
+            <span className="text-xs font-medium text-[var(--color-text-tertiary)]">or</span>
+            <div className="flex-1 h-px bg-[var(--color-border)]"></div>
           </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full relative flex items-center justify-center gap-2 py-4 px-4 mt-8 rounded-2xl text-sm font-bold text-white bg-black hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-all duration-300 disabled:opacity-70 disabled:hover:translate-y-0 hover:-translate-y-0.5 shadow-lg shadow-black/20"
-          >
-            {isSubmitting ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              'Create Account'
-            )}
-          </button>
-        </form>
-
-        <p className="mt-8 text-center text-[13px] font-medium text-slate-500">
-          Already have an account?{' '}
-          <Link to="/login" className="text-black hover:underline underline-offset-4 font-bold transition-all">
-            Sign in
-          </Link>
-        </p>
+          <p className="text-center text-sm text-[var(--color-text-secondary)]">
+            Already have an account?{' '}
+            <Link to="/login" className="font-bold text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors">
+              Sign in
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

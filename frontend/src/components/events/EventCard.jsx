@@ -1,18 +1,30 @@
 import { Link } from 'react-router-dom';
-import { MapPin, Clock, CalendarDays, ArrowUpRight } from 'lucide-react';
+import { MapPin, Clock, CalendarDays, ArrowUpRight, Users } from 'lucide-react';
+
+const categoryColors = {
+  hackathon: { bg: 'bg-violet-50', text: 'text-violet-700', border: 'border-violet-200/50' },
+  workshop: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200/50' },
+  seminar: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200/50' },
+  cultural: { bg: 'bg-pink-50', text: 'text-pink-700', border: 'border-pink-200/50' },
+  tech: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200/50' },
+  design: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200/50' },
+  coding: { bg: 'bg-cyan-50', text: 'text-cyan-700', border: 'border-cyan-200/50' },
+  sports: { bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200/50' },
+  other: { bg: 'bg-slate-50', text: 'text-slate-700', border: 'border-slate-200/50' },
+};
 
 const EventCard = ({ event }) => {
   const isFull = event.availableSeats === 0;
+  const colors = categoryColors[event.category] || categoryColors.other;
+  const seatPercent = ((event.totalSeats - event.availableSeats) / event.totalSeats) * 100;
 
   return (
     <Link 
       to={`/events/${event._id}`}
-      className="group block bg-white rounded-3xl border border-slate-200/80 overflow-hidden hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] hover:border-slate-300 transition-all duration-500 ease-out hover:-translate-y-1 flex flex-col h-full relative"
+      className="group block bg-white rounded-2xl border border-[var(--color-border)] overflow-hidden hover:shadow-card-hover hover:border-[var(--color-border-hover)] transition-all duration-500 ease-out hover:-translate-y-1 flex flex-col h-full"
     >
-      {/* Decorative Gradient Background behind card image */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 to-white -z-10"></div>
-
-      <div className="h-56 w-full bg-slate-100 relative overflow-hidden">
+      {/* Image */}
+      <div className="h-48 w-full bg-[var(--color-surface-tertiary)] relative overflow-hidden">
         {event.imageUrl ? (
           <>
             <img 
@@ -20,57 +32,64 @@ const EventCard = ({ event }) => {
               alt={event.title} 
               className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400"></div>
           </>
         ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 group-hover:bg-slate-50 transition-colors duration-500">
-            <CalendarDays className="h-14 w-14 mb-3 opacity-30 transform group-hover:scale-110 group-hover:text-blue-500 transition-all duration-500" />
-            <span className="font-semibold text-xs tracking-widest uppercase opacity-60">{event.category}</span>
+          <div className="w-full h-full flex flex-col items-center justify-center text-[var(--color-text-tertiary)] group-hover:text-[var(--color-primary)] transition-colors duration-500">
+            <CalendarDays className="h-10 w-10 mb-2 opacity-40" />
+            <span className="font-semibold text-xs tracking-widest uppercase opacity-50">{event.category}</span>
           </div>
         )}
         
-        {/* Clean Pill Badges */}
-        <div className="absolute top-5 left-5 flex gap-2">
-          <div className="px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[11px] font-bold uppercase tracking-wider text-slate-800 shadow-sm border border-white/20">
-            {event.category}
-          </div>
-        </div>
-
-        <div className="absolute top-5 right-5">
-          <span className={`px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider backdrop-blur-md shadow-sm border border-white/20 ${
-              isFull 
-                ? 'bg-red-500/90 text-white' 
-                : 'bg-black/80 text-white'
-            }`}>
-            {isFull ? 'Sold Out' : `${event.availableSeats} Left`}
-          </span>
+        {/* Floating Arrow */}
+        <div className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-xl opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-sm">
+          <ArrowUpRight className="h-4 w-4 text-[var(--color-text-primary)]" strokeWidth={2.5} />
         </div>
       </div>
       
-      <div className="p-6 md:p-8 flex flex-col flex-grow relative">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="text-xl font-bold text-black tracking-tight leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors pr-6">
-            {event.title}
-          </h3>
-          <ArrowUpRight className="h-5 w-5 text-slate-300 group-hover:text-blue-600 group-hover:-translate-y-1 group-hover:translate-x-1 transition-all duration-300 absolute right-6 top-7" />
+      {/* Content */}
+      <div className="p-5 flex flex-col flex-grow">
+        {/* Tags Row */}
+        <div className="flex items-center gap-2 mb-3">
+          <span className={`px-2.5 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider ${colors.bg} ${colors.text} border ${colors.border}`}>
+            {event.category}
+          </span>
+          {isFull && (
+            <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider bg-red-50 text-red-600 border border-red-200/50">
+              Sold Out
+            </span>
+          )}
         </div>
+
+        <h3 className="text-lg font-bold text-[var(--color-text-primary)] tracking-tight leading-snug line-clamp-2 mb-2 group-hover:text-[var(--color-primary)] transition-colors duration-300">
+          {event.title}
+        </h3>
         
-        <p className="text-slate-500 mb-8 line-clamp-2 flex-grow leading-relaxed font-normal text-[15px]">
+        <p className="text-sm text-[var(--color-text-secondary)] mb-auto line-clamp-2 leading-relaxed">
           {event.description}
         </p>
         
-        <div className="space-y-3 pt-6 border-t border-slate-100">
-          <div className="flex items-center text-[13px] font-medium text-slate-600">
-            <CalendarDays className="h-4 w-4 mr-3 text-slate-400" strokeWidth={2.5} />
-            {new Date(event.date).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-          </div>
-          <div className="flex items-center text-[13px] font-medium text-slate-600">
-            <Clock className="h-4 w-4 mr-3 text-slate-400" strokeWidth={2.5} />
+        {/* Meta Info */}
+        <div className="mt-4 pt-4 border-t border-[var(--color-border)] space-y-2">
+          <div className="flex items-center text-xs font-medium text-[var(--color-text-secondary)]">
+            <CalendarDays className="h-3.5 w-3.5 mr-2 text-[var(--color-text-tertiary)]" strokeWidth={2.5} />
+            {new Date(event.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+            <span className="mx-2 text-[var(--color-border)]">·</span>
+            <Clock className="h-3.5 w-3.5 mr-1.5 text-[var(--color-text-tertiary)]" strokeWidth={2.5} />
             {event.time}
           </div>
-          <div className="flex items-center text-[13px] font-medium text-slate-600">
-            <MapPin className="h-4 w-4 mr-3 text-slate-400" strokeWidth={2.5} />
-            <span className="truncate">{event.location}</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center text-xs font-medium text-[var(--color-text-secondary)]">
+              <MapPin className="h-3.5 w-3.5 mr-2 text-[var(--color-text-tertiary)]" strokeWidth={2.5} />
+              <span className="truncate max-w-[160px]">{event.location}</span>
+            </div>
+            {/* Seat Progress */}
+            <div className="flex items-center gap-2">
+              <div className="w-16 h-1.5 bg-[var(--color-surface-tertiary)] rounded-full overflow-hidden">
+                <div className={`h-full rounded-full transition-all ${isFull ? 'bg-red-400' : seatPercent > 70 ? 'bg-amber-400' : 'bg-emerald-400'}`} style={{width: `${seatPercent}%`}}></div>
+              </div>
+              <span className="text-[11px] font-semibold text-[var(--color-text-tertiary)]">{event.availableSeats} left</span>
+            </div>
           </div>
         </div>
       </div>

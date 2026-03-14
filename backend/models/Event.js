@@ -8,12 +8,12 @@ const eventSchema = new mongoose.Schema({
   location: { type: String, required: true },
   category: { 
     type: String, 
-    enum: ['hackathon', 'workshop', 'seminar', 'cultural', 'other'],
+    enum: ['hackathon', 'workshop', 'seminar', 'cultural', 'tech', 'design', 'coding', 'sports', 'other'],
     required: true 
   },
   totalSeats: { type: Number, required: true },
   availableSeats: { type: Number, required: true },
-  organizerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  organizerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   imageUrl: { type: String, default: '' },
 }, { timestamps: true });
 

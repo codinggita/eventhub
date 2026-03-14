@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../utils/api';
 import EventCard from '../components/events/EventCard';
-import { Search, Sparkles } from 'lucide-react';
+import { Search, Sparkles, ArrowRight, Calendar, Users, Zap } from 'lucide-react';
 
 const HomePage = () => {
   const [events, setEvents] = useState([]);
@@ -32,101 +32,125 @@ const HomePage = () => {
         setLoading(false);
       }
     };
-
     fetchEvents();
   }, [page, debouncedSearch]);
 
   return (
     <div className="w-full relative overflow-hidden">
       
-      {/* Premium Background Orbs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-400/20 rounded-full blur-[120px] pointer-events-none mix-blend-multiply"></div>
-      <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] bg-purple-400/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply"></div>
+      {/* Premium Background Mesh */}
+      <div className="absolute inset-0 bg-mesh pointer-events-none"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-b from-indigo-500/8 via-purple-500/5 to-transparent rounded-full blur-3xl pointer-events-none"></div>
 
-      <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-32 pb-24 relative z-10">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-20 relative z-10">
         
-        {/* FAANG Style Hero */}
-        <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-20 animate-fade-in-up">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm mb-6 text-xs font-semibold text-slate-800 tracking-wide uppercase">
-            <Sparkles className="h-3.5 w-3.5 text-blue-500" />
-            <span>Discover What's Next</span>
+        {/* Hero Section */}
+        <div className="flex flex-col items-center text-center max-w-4xl mx-auto mb-20">
+          
+          {/* Chip Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--color-primary-muted)] border border-indigo-200/50 mb-8 animate-fade-in-up">
+            <Sparkles className="h-3.5 w-3.5 text-[var(--color-primary)]" />
+            <span className="text-xs font-bold text-[var(--color-primary)] tracking-wide uppercase">Your Campus. Your Events.</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-black mb-6 leading-[1.1]">
-            Experience Campus <br/>
-            <span className="text-gradient">Events Reimagined.</span>
+          {/* Main Headline */}
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tighter text-[var(--color-text-primary)] mb-6 leading-[1.05] animate-fade-in-up" style={{animationDelay: '0.1s'}}>
+            Discover Events That
+            <br/>
+            <span className="text-gradient">Shape Your Future</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-slate-500 mb-10 font-light leading-relaxed max-w-2xl">
-            Seamlessly discover hackathons, technical workshops, and incredible cultural fests happening right now.
+          <p className="text-lg md:text-xl text-[var(--color-text-secondary)] mb-10 font-normal leading-relaxed max-w-2xl animate-fade-in-up" style={{animationDelay: '0.2s'}}>
+            Find hackathons, workshops, and cultural fests happening on campus. RSVP instantly and never miss an opportunity.
           </p>
           
-          {/* Apple Spotlight Style Search */}
-          <div className="w-full relative group max-w-2xl">
-            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-slate-400 group-focus-within:text-black transition-colors duration-300" />
+          {/* Search Bar — Vercel/Linear style */}
+          <div className="w-full max-w-2xl relative group animate-fade-in-up" style={{animationDelay: '0.3s'}}>
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 rounded-2xl opacity-0 group-focus-within:opacity-20 blur-sm transition-opacity duration-500"></div>
+            <div className="relative flex items-center">
+              <Search className="absolute left-5 h-5 w-5 text-[var(--color-text-tertiary)] group-focus-within:text-[var(--color-primary)] transition-colors duration-300" />
+              <input
+                type="text"
+                className="w-full pl-14 pr-6 py-4.5 rounded-2xl border border-[var(--color-border)] bg-white/80 backdrop-blur-sm shadow-card focus:shadow-card-hover focus:border-[var(--color-primary)] focus:ring-2 focus:ring-indigo-500/10 text-[var(--color-text-primary)] transition-all duration-300 text-base outline-none placeholder:text-[var(--color-text-tertiary)] font-medium"
+                placeholder="Search events, workshops, hackathons..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <kbd className="absolute right-5 hidden sm:inline-flex items-center gap-0.5 border border-[var(--color-border)] rounded-lg px-2 py-1 text-[11px] font-medium text-[var(--color-text-tertiary)] bg-[var(--color-surface-tertiary)]">⌘K</kbd>
             </div>
-            <input
-              type="text"
-              className="block w-full pl-14 pr-6 py-5 rounded-2xl border border-slate-200 bg-white/60 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.04)] focus:shadow-[0_8px_30px_rgb(0,0,0,0.08)] focus:border-slate-300 focus:bg-white focus:ring-0 text-black transition-all duration-300 text-lg outline-none placeholder:text-slate-400 font-medium"
-              placeholder="Search by title, club, or category..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {/* Keyboard shortcut hint (visual only) */}
-            <div className="absolute inset-y-0 right-0 pr-5 flex items-center pointer-events-none opacity-0 md:opacity-100">
-              <kbd className="hidden sm:inline-block border border-slate-200 rounded px-2 text-xs font-sans text-slate-400 bg-slate-50 font-medium">⌘K</kbd>
-            </div>
+          </div>
+
+          {/* Stats Row */}
+          <div className="flex items-center gap-8 mt-10 animate-fade-in-up" style={{animationDelay: '0.4s'}}>
+            <Stat icon={<Calendar className="w-4 h-4"/>} value="50+" label="Events" />
+            <div className="w-px h-8 bg-[var(--color-border)]"></div>
+            <Stat icon={<Users className="w-4 h-4"/>} value="2K+" label="Students" />
+            <div className="w-px h-8 bg-[var(--color-border)]"></div>
+            <Stat icon={<Zap className="w-4 h-4"/>} value="98%" label="Satisfaction" />
           </div>
         </div>
 
-        {/* Feed Section */}
+        {/* Events Feed */}
         <div className="mb-16">
-          <div className="flex items-end justify-between mb-10 border-b border-slate-200/60 pb-4">
-            <h2 className="text-2xl font-bold tracking-tight text-black">
-              {debouncedSearch ? `Results for "${debouncedSearch}"` : 'Upcoming Events'}
-            </h2>
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-[var(--color-text-primary)]">
+                {debouncedSearch ? `Results for "${debouncedSearch}"` : 'Upcoming Events'}
+              </h2>
+              <p className="text-sm text-[var(--color-text-tertiary)] mt-1 font-medium">Browse and RSVP to events happening near you</p>
+            </div>
           </div>
 
           {loading ? (
             <div className="flex justify-center py-32">
-              <div className="animate-spin rounded-full h-8 w-8 border-2 border-black border-t-transparent"></div>
+              <div className="relative">
+                <div className="h-10 w-10 border-3 border-[var(--color-surface-tertiary)] rounded-full"></div>
+                <div className="absolute top-0 h-10 w-10 border-3 border-transparent border-t-[var(--color-primary)] rounded-full animate-spin"></div>
+              </div>
             </div>
           ) : events.length === 0 ? (
-            <div className="text-center py-32 bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-200 border-dashed">
-              <div className="bg-slate-100 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="h-6 w-6 text-slate-400" />
+            <div className="text-center py-28 bg-white/60 backdrop-blur-sm rounded-3xl border border-[var(--color-border)] border-dashed shadow-card">
+              <div className="bg-[var(--color-surface-tertiary)] h-16 w-16 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <Search className="h-7 w-7 text-[var(--color-text-tertiary)]" />
               </div>
-              <h3 className="text-xl font-bold text-black mb-2">No events found</h3>
-              <p className="text-slate-500 max-w-md mx-auto">We couldn't find any events matching your search criteria. Try adjusting your keywords.</p>
+              <h3 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">No events found</h3>
+              <p className="text-[var(--color-text-secondary)] max-w-md mx-auto text-sm">We couldn't find any events matching your search. Try adjusting your keywords.</p>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {events.map(event => (
-                  <EventCard key={event._id} event={event} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {events.map((event, i) => (
+                  <div key={event._id} className="animate-fade-in-up" style={{animationDelay: `${i * 0.08}s`}}>
+                    <EventCard event={event} />
+                  </div>
                 ))}
               </div>
 
-              {/* Minimalist Pagination */}
+              {/* Pagination */}
               {totalPages > 1 && (
-                <div className="mt-16 flex justify-center items-center gap-6">
+                <div className="mt-14 flex justify-center items-center gap-2">
                   <button
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="p-2 rounded-full border border-slate-200 text-slate-500 hover:text-black hover:border-black disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-500 transition-all duration-300"
+                    className="px-4 py-2.5 rounded-xl border border-[var(--color-border)] text-sm font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-hover)] hover:bg-white disabled:opacity-30 transition-all"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+                    Previous
                   </button>
-                  <span className="text-sm font-semibold text-slate-800 tracking-widest uppercase">
-                    Page {page} of {totalPages}
-                  </span>
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setPage(i + 1)}
+                      className={`w-10 h-10 rounded-xl text-sm font-semibold transition-all ${page === i + 1 ? 'bg-[var(--color-primary)] text-white shadow-lg shadow-indigo-500/25' : 'text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-tertiary)]'}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
                   <button
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
-                    className="p-2 rounded-full border border-slate-200 text-slate-500 hover:text-black hover:border-black disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-500 transition-all duration-300"
+                    className="px-4 py-2.5 rounded-xl border border-[var(--color-border)] text-sm font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:border-[var(--color-border-hover)] hover:bg-white disabled:opacity-30 transition-all flex items-center gap-1"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+                    Next <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}
@@ -137,5 +161,15 @@ const HomePage = () => {
     </div>
   );
 };
+
+const Stat = ({ icon, value, label }) => (
+  <div className="flex items-center gap-2.5 text-[var(--color-text-secondary)]">
+    <div className="p-1.5 rounded-lg bg-[var(--color-primary-muted)] text-[var(--color-primary)]">{icon}</div>
+    <div>
+      <p className="text-lg font-bold text-[var(--color-text-primary)] leading-none">{value}</p>
+      <p className="text-xs font-medium text-[var(--color-text-tertiary)]">{label}</p>
+    </div>
+  </div>
+);
 
 export default HomePage;
