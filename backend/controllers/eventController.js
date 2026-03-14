@@ -78,8 +78,57 @@ const createEvent = async (req, res) => {
   }
 };
 
+// @desc    Delete an event
+// @route   DELETE /api/events/:id
+// @access  Private/Organizer
+const deleteEvent = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    // Ensure the organizer owns this event
+    if (event.organizerId && event.organizerId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not authorized to delete this event' });
+    }
+
+    await Event.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Event deleted' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    RSVP to an event
+// @route   POST /api/events/:id/rsvp
+// @access  Private
+const rsvpEvent = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    if (event.availableSeats <= 0) {
+      return res.status(400).json({ message: 'Event is fully booked' });
+    }
+
+    event.availableSeats -= 1;
+    await event.save();
+
+    res.json({ message: 'RSVP successful', availableSeats: event.availableSeats });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getEvents,
   getEventById,
-  createEvent
+  createEvent,
+  deleteEvent,
+  rsvpEvent,
 };
