@@ -2,8 +2,14 @@ import axios from 'axios';
 
 const getBaseURL = () => {
   const envUrl = import.meta.env.VITE_API_URL;
+  
+  // If no env var, use relative '/api' (Works for Unified Deploy)
   if (!envUrl) return '/api';
-  return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
+  
+  // If env var exists, make sure it ends with /api
+  // We trim trailing slashes first to be safe
+  const baseUrl = envUrl.replace(/\/$/, '');
+  return baseUrl.endsWith('/api') ? baseUrl : `${baseUrl}/api`;
 };
 
 const api = axios.create({
