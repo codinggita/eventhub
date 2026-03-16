@@ -3,8 +3,11 @@ const http = require('http');
 const path = require('path');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const { Server } = require('socket.io');
 const connectDB = require('./config/db');
+const errorHandler = require('./middleware/errorHandler');
 const authRoutes = require('./routes/authRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const recommendationRoutes = require('./routes/recommendationRoutes');
@@ -39,13 +42,25 @@ app.use((req, res, next) => {
   next();
 });
 
+// Security headers
+app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
+
 app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
   credentials: true
 }));
 app.use(express.json());
 
-app.use('/api/auth', authRoutes);
+// Rate limiter for auth routes (max 20 req / 15 min per IP)
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many requests, please try again later.' },
+});
+
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/comments', commentRoutes);
@@ -58,6 +73,11 @@ app.use('/api/notifications', notificationRoutes);
 
 // Initialize Socket.io room handlers
 setupSocketHandlers(io);
+
+// 404 catch-all for unknown API routes
+app.all('/api/{*path}', (req, res) => {
+  res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` });
+});
 
 // Static files for production
 if (process.env.NODE_ENV === 'production') {
@@ -73,7 +93,9 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+// Global error handler (must be last)
+app.use(errorHandler);
+
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT} (with Socket.io)`));
-

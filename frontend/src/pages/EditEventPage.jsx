@@ -12,6 +12,7 @@ const categories = [
   { value: 'design', label: '🎨 Design' },
   { value: 'coding', label: '👨‍💻 Coding' },
   { value: 'sports', label: '⚽ Sports' },
+  { value: 'E-sports', label: '🎮 E-sports' },
   { value: 'other', label: '📌 Other' },
 ];
 

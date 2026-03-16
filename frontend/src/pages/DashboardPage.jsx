@@ -21,9 +21,9 @@ const DashboardPage = () => {
       // Fetch stats and events in parallel
       const [eventsRes, statsRes, trendRes, utilRes] = await Promise.all([
         api.get('/events'),
-        api.get('/api/analytics/overview'),
-        api.get('/api/analytics/rsvp-trend'),
-        api.get('/api/analytics/seat-util')
+        api.get('/analytics/overview'),
+        api.get('/analytics/rsvp-trend'),
+        api.get('/analytics/seat-util')
       ]);
 
       const myEvents = eventsRes.data.events.filter(e => e.organizerId?._id === user?._id || e.organizerId === user?._id);

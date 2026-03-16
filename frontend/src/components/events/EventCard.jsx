@@ -21,7 +21,7 @@ const EventCard = ({ event }) => {
   useEffect(() => {
     const fetchRating = async () => {
       try {
-        const { data } = await api.get(`/api/ratings/${event._id}`);
+        const { data } = await api.get(`/ratings/${event._id}`);
         setRatingData(data);
       } catch (error) {
         // Silent fail for feed
