@@ -5,16 +5,20 @@ const connectDB = async () => {
     const uri = process.env.MONGO_URI;
     
     if (!uri) {
-      throw new Error('MONGO_URI is not defined in environment variables. If you are on Render, please set it in the Dashboard.');
+      throw new Error('MONGO_URI is missing. Please set it in Render Dashboard -> Environment.');
     }
 
-    const conn = await mongoose.connect(uri);
+    // Diagnostic log (SAFE: only shows first few characters and length)
+    console.log(`Debug: MONGO_URI exists. Length: ${uri.length}. Starts with: ${uri.substring(0, 10)}...`);
+
+    const conn = await mongoose.connect(uri.trim()); // trim() helps if there are trailing spaces
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error(`Error connecting to MongoDB: ${error.message}`);
-    // Provide a helpful hint for "Invalid scheme" errors
+    
+    // Specific hints for common Render issues
     if (error.message.includes('Invalid scheme')) {
-      console.warn('HINT: Your MONGO_URI might be empty or malformed. Ensure it starts with "mongodb://" or "mongodb+srv://"');
+      console.warn('HINT: Your MONGO_URI in Render might have invisible characters, quotes, or is not a valid mongodb+srv:// string.');
     }
     process.exit(1);
   }
