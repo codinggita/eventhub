@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Ticket, CheckCircle, Loader2, Zap } from 'lucide-react';
+import { Ticket, CheckCircle, Loader2 } from 'lucide-react';
 import socket from '../../utils/socket';
+import { useToast } from '../common/Toast';
 
 const RSVPButton = ({ event, user, onRsvpSuccess }) => {
+  const toast = useToast();
   const [rsvpd, setRsvpd] = useState(false);
   const [availableSeats, setAvailableSeats] = useState(event?.availableSeats || 0);
   const [totalSeats] = useState(event?.totalSeats || 0);
@@ -45,7 +47,10 @@ const RSVPButton = ({ event, user, onRsvpSuccess }) => {
   }, [event?._id, user?._id]);
 
   const handleRSVP = async () => {
-    if (!user) return alert('Please log in to RSVP.');
+    if (!user) {
+      toast('Please log in to RSVP.', 'info');
+      return;
+    }
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
@@ -60,12 +65,13 @@ const RSVPButton = ({ event, user, onRsvpSuccess }) => {
       if (res.ok) {
         setRsvpd(true);
         setAvailableSeats(data.availableSeats);
+        toast('You\'re registered! See you there 🎉', 'success');
         if (onRsvpSuccess) onRsvpSuccess(data);
       } else {
-        alert(data.message || 'RSVP failed.');
+        toast(data.message || 'RSVP failed.', 'error');
       }
     } catch (err) {
-      alert('RSVP failed. Please try again.');
+      toast('RSVP failed. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
