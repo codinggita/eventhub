@@ -5,7 +5,6 @@ import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import ScrollToTop from './components/common/ScrollToTop';
 import ProtectedRoute from './components/common/ProtectedRoute';
-import Chatbot from './components/common/Chatbot';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -15,6 +14,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import CreateEventPage from './pages/CreateEventPage';
 import EditEventPage from './pages/EditEventPage';
 import EventDetailPage from './pages/EventDetailPage';
+import ProfilePage from './pages/ProfilePage';
 import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
@@ -46,10 +46,12 @@ function App() {
                   <ProtectedRoute role="organizer"><EditEventPage /></ProtectedRoute>
                 } />
                 <Route path="/events/:id" element={<EventDetailPage />} />
+                <Route path="/profile" element={
+                  <ProtectedRoute><ProfilePage /></ProtectedRoute>
+                } />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </main>
-            <Chatbot />
             <Footer />
           </div>
         </ToastProvider>

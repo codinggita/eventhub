@@ -1,8 +1,6 @@
 const Event = require('../models/Event');
 const User = require('../models/User');
 
-const { moderate } = require('./aiController');
-
 // @desc    Get all events (with pagination & search)
 // @route   GET /api/events
 // @access  Public
@@ -60,15 +58,6 @@ const getEventById = async (req, res) => {
 const createEvent = async (req, res) => {
   try {
     const { title, description, date, time, location, category, totalSeats, imageUrl, tags } = req.body;
-
-    // AI Content Moderation
-    const moderation = await moderate(description, 'event description');
-    if (!moderation.approved) {
-      return res.status(400).json({ 
-        message: 'Event description violates community guidelines.', 
-        reason: moderation.reason 
-      });
-    }
 
     const event = new Event({
       title,
@@ -179,23 +168,6 @@ const rsvpEvent = async (req, res) => {
     event.attendees.push(req.user._id);
     event.availableSeats -= 1;
     await event.save();
-
-    // --- AI: Update user preference vector ---
-    try {
-      const user = await User.findById(req.user._id);
-      const tagsToLearn = [event.category, ...(event.tags || [])];
-      tagsToLearn.forEach(tag => {
-        const normalized = tag.toLowerCase().trim();
-        if (normalized) {
-          const current = user.preferences.get(normalized) || 0;
-          user.preferences.set(normalized, current + 1);
-        }
-      });
-      await user.save();
-    } catch (prefError) {
-      console.error('Failed to update user preferences:', prefError);
-      // Non-blocking — RSVP still succeeds even if preference update fails
-    }
 
     // --- Socket.io: Broadcast real-time RSVP update ---
     if (req.io) {

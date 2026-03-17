@@ -18,7 +18,6 @@ const bookmarkRoutes = require('./routes/bookmarkRoutes');
 const calendarRoutes = require('./routes/calendarRoutes');
 const leaderboardRoutes = require('./routes/leaderboardRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
-const aiRoutes = require('./routes/aiRoutes');
 require('./jobs/reminderCron'); // Start cron jobs
 const { setupSocketHandlers } = require('./socket/handlers');
 
@@ -70,13 +69,12 @@ app.use('/api/bookmarks', bookmarkRoutes);
 app.use('/api/calendar', calendarRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/notifications', notificationRoutes);
-app.use('/api/ai', aiRoutes);
 
 // Initialize Socket.io room handlers
 setupSocketHandlers(io);
 
 // 404 catch-all for unknown API routes
-app.all('/api/{*path}', (req, res) => {
+app.all(/\/api\/.*/, (req, res) => {
   res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` });
 });
 
